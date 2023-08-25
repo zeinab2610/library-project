@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Books List</title>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
+    </head>
+    <body>
+        <table class="table table-striped table-bordered table-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Publication Date</th>
+                    <th>Actions</th>
+                    {% for book in books %}
+                    <tr>
+                        <td>{{ book.title}}</td>
+                        <td>{{book.author}}</td>
+                        <td>{{book.category}}</td>
+                        <td>{{book.publicationDate}}</td>
+                        <td>
+                            <a href="/edit/{{book.id}}"><span class="btn btn-success">Edit</span></a>
+                            <a href="/delete/{{book.id}}" class="btn btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

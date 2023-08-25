@@ -11,7 +11,7 @@ def create_book(request):
                 form.save()
                 return redirect('/view')
             except:
-                password
+                pass
     else:
         form = BooksForm()
     return render(request,'index.html',{'form': form})

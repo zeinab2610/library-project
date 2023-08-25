@@ -3,9 +3,11 @@
     <head>
         <meta charset="UTF-8">
         <title>Index</title>
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
     </head>
     <body>
-        <form method="post" class="post-form" action="/books/">
+        <form method="POST" class="post-form" action="/books/">
             {%csrf_token %}
             <div class="container">
         <br>
@@ -32,6 +34,12 @@
                 <label class="col-sm-2 col-form-label"> category</label>
                 <div class="col-sm-4">
                     {{form.category}}
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label"> PUBLICATION DATE</label>
+                <div class="col-sm-4">
+                    {{form.publicationDate}}
                 </div>
             </div>
 

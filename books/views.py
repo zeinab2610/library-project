@@ -15,6 +15,12 @@ def create_book(request):
     else:
         form = BooksForm()
     return render(request,'index.html',{'form': form})
+
 def view(request):
     books = Book.objects.all()
     return render(request,"view.html",{'books':books})
+
+def delete(request, id):
+    books = Book.objects.get(id=id)
+    books.delete()
+    return redirect("/view")

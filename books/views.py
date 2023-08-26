@@ -24,3 +24,22 @@ def delete(request, id):
     books = Book.objects.get(id=id)
     books.delete()
     return redirect("/view")
+
+def edit(request, id):
+    book = Book.objects.get(id=id)
+    return render(request, 'edit.html',{'book': book})
+
+def update(request, id):
+    book = Book.objects.get(id=id)
+    form = BooksForm(request.POST,instance = book)
+    print(form.is_valid())
+    if form.is_valid():
+            print('hii')
+            try:
+                form.save()
+                return redirect('/view')
+            except:
+                pass
+   
+    return render(request,'index.html',{'form': form})
+    # return render(request, 'edit.html',{'book': book})

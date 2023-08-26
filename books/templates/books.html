@@ -37,10 +37,10 @@
                                
                                 <td>
                                     <div class="lh-1">
-                                        <div>{{ book.category}}</div>
+                                        <div>{{ book.category_id}}</div>
                                     </div>
                                 </td>
-                                <td>{{ book.publication_date|date:"Y-m-d h:i A"}}</td>
+                                <td>{{ book.publication_date|date:"Y-m-d"}}</td>
                                 <td class="text-center">
                                     <div class="dropdown">
                                         <button class="btn btn-light btn-sm rounded-0 border dropdown-toggle" type="button" id="abtn{{book.pk}}" data-bs-toggle="dropdown" aria-expanded="false">

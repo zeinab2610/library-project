@@ -11,20 +11,15 @@
     <form action="" id="book-form">
         <input type="hidden" name="id" value="{{book.id}}">
         <div class="mb-3">
-            <label for="sub_category" class="control-label">Category</label>
-            <select type="text" id="sub_category" name="sub_category" class="form-select form-select-sm rounded-0" required>
-                {% if not book.category %}
-                    <option  disabled selected></option>
-                {% else %}
-                    <option disabled>Male</option>
-                {% endif %}
-                {% for sub_category in sub_categories %}
-                {% if  book.sub_category.id == sub_category.id %}
-                    <option value="{{sub_category.id}}" selected>{{sub_category.category}} - {{sub_category.name}}</option>
-                {% else %}
-                    <option value="{{sub_category.id}}">{{sub_category.category}} - {{sub_category.name}}</option>
-                {% endif %}
-                {% endfor %}
+            <label for="category" class="control-label">Category</label>
+            <select type="text" id="category" name="category_id" class="form-select form-select-sm rounded-0" required>
+                <option disabled selected value="">Select a category</option>
+    {% for category in categories %}
+        <option value="{{ category.id }}" {% if book.category_id and book.category_id == category.id %}selected{% endif %}>
+            {{ category.category }} - {{ category.name }}
+        </option>
+    {% endfor %}
+                   
             </select>
         </div>
         <div class="mb-3">
@@ -39,7 +34,7 @@
         
         <div class="mb-3">
             <label for="date_published" class="control-label">Date Published</label>
-            <input type="date" id="date_published" name="publication_date" class="form-control form-control-sm rounded-0" value="{{book.date_published|date:'Y-m-d'}}" required>
+            <input type="date" id="publication_date" name="publication_date" class="form-control form-control-sm rounded-0" value="{{book.publication_date|date:'Y-m-d'}}" required>
         </div>
     </form>
 </div>

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from books.forms import BooksForm
-from books.models import Book
+from books.models import Book, Category
 import datetime
 from django.shortcuts import redirect, render
 import json
@@ -361,8 +361,8 @@ def delete_category(request, pk = None):
         resp['msg'] = 'Sub Category ID is invalid'
     else:
         try:
-            models.SubCategory.objects.filter(pk = pk).update(delete_flag = 1)
-            messages.success(request, "Sub Category has been deleted successfully.")
+            models.Category.objects.filter(pk = pk).delete()
+            messages.success(request, "Category has been deleted successfully.")
             resp['status'] = 'success'
         except:
             resp['msg'] = "Deleting Sub Category Failed"
@@ -374,7 +374,7 @@ def books(request):
     context = context_data(request)
     context['page'] = 'book'
     context['page_title'] = "Book List"
-    context['books'] = models.Books.objects.filter(delete_flag = 0).all()
+    context['books'] = models.Book.objects.all()
     return render(request, 'books.html', context)
 
 @login_required
@@ -383,10 +383,10 @@ def save_book(request):
     if request.method == 'POST':
         post = request.POST
         if not post['id'] == '':
-            book = models.Books.objects.get(id = post['id'])
-            form = forms.SaveBook(request.POST, instance=book)
+            book = models.Book.objects.get(id = post['id'])
+            form = forms.BooksForm(request.POST, instance=book)
         else:
-            form = forms.SaveBook(request.POST) 
+            form = forms.BooksForm(request.POST) 
 
         if form.is_valid():
             form.save()
@@ -420,14 +420,15 @@ def view_book(request, pk = None):
 
 @login_required
 def manage_book(request, pk = None):
+    categories = Category.objects.all()
     context = context_data(request)
     context['page'] = 'manage_book'
     context['page_title'] = 'Manage Book'
+    context['categories'] = categories
     if pk is None:
         context['book'] = {}
     else:
-        context['book'] = models.Books.objects.get(id=pk)
-    context['sub_categories'] = models.SubCategory.objects.filter(delete_flag = 0, status = 1).all()
+        context['book'] = models.Book.objects.get(id=pk)
     return render(request, 'manage_book.html', context)
 
 @login_required
@@ -437,7 +438,7 @@ def delete_book(request, pk = None):
         resp['msg'] = 'Book ID is invalid'
     else:
         try:
-            models.Books.objects.filter(pk = pk).update(delete_flag = 1)
+            models.Book.objects.filter(pk = pk).delete()
             messages.success(request, "Book has been deleted successfully.")
             resp['status'] = 'success'
         except:
@@ -453,7 +454,6 @@ def delete_book(request, pk = None):
         context['student'] = {}
     else:
         context['student'] = models.Students.objects.get(id=pk)
-    context['sub_categories'] = models.SubCategory.objects.filter(delete_flag = 0, status = 1).all()
     return render(request, 'manage_student.html', context)
 
 

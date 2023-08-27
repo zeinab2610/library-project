@@ -12,14 +12,14 @@
         <input type="hidden" name="id" value="{{book.id}}">
         <div class="mb-3">
             <label for="category" class="control-label">Category</label>
-            <select type="text" id="category" name="category_id" class="form-select form-select-sm rounded-0" required>
+            
+            <select type="text" id="category_id" name="category_id" class="form-select form-select-sm rounded-0" required>
                 <option disabled selected value="">Select a category</option>
-    {% for category in categories %}
-        <option value="{{ category.id }}" {% if book.category_id and book.category_id == category.id %}selected{% endif %}>
-            {{ category.category }} - {{ category.name }}
-        </option>
-    {% endfor %}
-                   
+                {% for category in categories %}
+                    <option value="{{ category.id}}" {% if book.category_id and book.category_id == category %}selected{% endif %}>
+                         {{ category.name }}
+                    </option>
+                {% endfor %}
             </select>
         </div>
         <div class="mb-3">
@@ -60,6 +60,7 @@
                 return false;
             }
             start_loader();
+          console.log($(this)[0]);
             $.ajax({
                 headers: {
                     "X-CSRFToken": '{{csrf_token}}'

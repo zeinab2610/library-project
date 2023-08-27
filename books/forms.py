@@ -107,11 +107,3 @@ class UpdateUser(UserChangeForm):
         except Exception as e:
             return username
         raise forms.ValidationError(f"The {user.username} mail is already exists/taken")
-
-class UpdatePasswords(PasswordChangeForm):
-    old_password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control form-control-sm rounded-0'}), label="Old Password")
-    new_password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control form-control-sm rounded-0'}), label="New Password")
-    new_password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control form-control-sm rounded-0'}), label="Confirm New Password")
-    class Meta:
-        model = User
-        fields = ('old_password','new_password1', 'new_password2')

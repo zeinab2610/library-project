@@ -33,11 +33,9 @@
                             <tr>
                          <td>{{ book.title }}</td>
                          <td>{{ book.author}}</td>
-                              
-                               
                                 <td>
                                     <div class="lh-1">
-                                        <div>{{ book.category_id}}</div>
+                                        <div>{{ book.category_id.name}}</div>
                                     </div>
                                 </td>
                                 <td>{{ book.publication_date|date:"Y-m-d"}}</td>
@@ -66,7 +64,7 @@
 <script>
     $(function() {
         $('#create_new').click(function() {
-            uni_modal("<i class='fa fa-plus'></i> Add New Book", "{% url 'manage-book' %}", "modal-lg")
+            uni_modal("<i class='fa fa-plus'></i> Add New Book", "{% url 'manage-book' %}?action=create", "modal-lg")
         })
         $('.edit-data').click(function() {
             uni_modal("<i class='fa fa-edit'></i> Edit Book Details", $(this).attr('data-url'), "modal-lg")

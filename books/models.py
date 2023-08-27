@@ -16,8 +16,8 @@ class Category(models.Model):
 
   class Meta:
           db_table = "categories"
-  def __str__(self):
-        return str(f"{self.name}")
+  # def __str__(self):
+  #       return str(f"{self.name}")
 
 
 class Book(models.Model):

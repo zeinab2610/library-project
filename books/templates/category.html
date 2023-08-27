@@ -66,8 +66,7 @@
 <script>
     $(function() {
         $('#create_new').click(function() {
-            uni_modal("<i class='fa fa-plus'></i> Add New Category", "{% url 'manage-category' %}")
-        })
+            uni_modal("<i class='fa fa-plus'></i> Add New Category", "{% url 'manage-category' %}?action=create");        })
         $('.view-data').click(function() {
             uni_modal("<i class='fa fa-th-list'></i> Category Details", $(this).attr('data-url'))
         })

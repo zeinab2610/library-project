@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from books.forms import BooksForm
+from books.forms import BooksForm, CategoryForm
 from books.models import Book, Category
 import datetime
 from django.shortcuts import redirect, render
@@ -55,6 +55,33 @@ def update(request, id):
     # return render(request, 'edit.html',{'book': book})
 
 
+
+def update_category(request, id):
+    category = Category.objects.get(id=id)
+    form = CategoryForm(request.POST,instance = category)
+    if form.is_valid():
+      if form.is_valid():
+        form.save()
+        messages.success(request, 'Category is  updated successfully.')
+        return redirect('/category')
+    else:
+        messages.error(request, 'Error updating category. Please check your input.')
+        return redirect('/category')
+
+def update_book(request, id):
+    book = Book.objects.get(id=id)
+    form = BooksForm(request.POST,instance = book)
+    if form.is_valid():
+      if form.is_valid():
+        form.save()
+        messages.success(request, 'Book is  updated successfully.')
+        return redirect('/books')
+    else:
+        messages.error(request, 'Error updating category. Please check your input.')
+        return redirect('/books')
+   
+    return redirect('/books')
+
 def context_data(request):
     fullpath = request.get_full_path()
     abs_uri = request.build_absolute_uri()
@@ -98,25 +125,6 @@ def save_register(request):
             
     return HttpResponse(json.dumps(resp), content_type="application/json")
 
-@login_required
-def update_profile(request):
-    context = context_data(request)
-    context['page_title'] = 'Update Profile'
-    user = User.objects.get(id = request.user.id)
-    if not request.method == 'POST':
-        form = forms.UpdateProfile(instance=user)
-        context['form'] = form
-        print(form)
-    else:
-        form = forms.UpdateProfile(request.POST, instance=user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Profile has been updated")
-            return redirect("profile-page")
-        else:
-            context['form'] = form
-            
-    return render(request, 'manage_profile.html',context)
 
 @login_required
 def update_password(request):
@@ -271,7 +279,18 @@ def save_category(request):
             form = forms.CategoryForm(request.POST) 
 
         if form.is_valid():
+            print(form.cleaned_data)
+            if not form.cleaned_data['name']:
+                print("no name")
+                form.add_error('name', 'Name is required.')
+            if not form.cleaned_data['description']:
+                form.add_error('description', 'Description is required.')
+
+            if form.errors:
+                # There are errors, render the form again with errors
+                return render(request, 'manage_category.html', {'form': form})
             form.save()
+
             if post['id'] == '':
                 messages.success(request, "Category has been saved successfully.")
             else:
@@ -286,8 +305,9 @@ def save_category(request):
     else:
          resp['msg'] = "There's no data sent on the request"
 
-    return HttpResponse(json.dumps(resp), content_type="application/json")
-
+  
+    return redirect('/category')
+    
 @login_required
 def view_category(request, pk = None):
     context = context_data(request)
@@ -305,10 +325,17 @@ def manage_category(request, pk = None):
     context = context_data(request)
     context['page'] = 'manage_category'
     context['page_title'] = 'Manage Category'
+    action = request.GET.get('action')
+    if action == 'create':
+        context['create'] = 'true'
+    else:
+        context['create'] = 'false'
+
     if pk is None:
         context['category'] = {}
     else:
         context['category'] = models.Category.objects.get(id=pk)
+       
     
     return render(request, 'manage_category.html', context)
 
@@ -328,48 +355,6 @@ def delete_category(request, pk = None):
     return HttpResponse(json.dumps(resp), content_type="application/json")
 
 
-    resp = { 'status': 'failed', 'msg' : '' }
-    if request.method == 'POST':
-        post = request.POST
-        if not post['id'] == '':
-            sub_category = models.SubCategory.objects.get(id = post['id'])
-            form = forms.SaveSubCategory(request.POST, instance=sub_category)
-        else:
-            form = forms.SaveSubCategory(request.POST) 
-
-        if form.is_valid():
-            form.save()
-            if post['id'] == '':
-                messages.success(request, "Sub Category has been saved successfully.")
-            else:
-                messages.success(request, "Sub Category has been updated successfully.")
-            resp['status'] = 'success'
-        else:
-            for field in form:
-                for error in field.errors:
-                    if not resp['msg'] == '':
-                        resp['msg'] += str('<br/>')
-                    resp['msg'] += str(f'[{field.name}] {error}')
-    else:
-         resp['msg'] = "There's no data sent on the request"
-
-    return HttpResponse(json.dumps(resp), content_type="application/json")
-
-
-    resp = { 'status' : 'failed', 'msg':''}
-    if pk is None:
-        resp['msg'] = 'Sub Category ID is invalid'
-    else:
-        try:
-            models.Category.objects.filter(pk = pk).delete()
-            messages.success(request, "Category has been deleted successfully.")
-            resp['status'] = 'success'
-        except:
-            resp['msg'] = "Deleting Sub Category Failed"
-
-    return HttpResponse(json.dumps(resp), content_type="application/json")
-
-@login_required
 def books(request):
     context = context_data(request)
     context['page'] = 'book'
@@ -404,7 +389,7 @@ def save_book(request):
     else:
          resp['msg'] = "There's no data sent on the request"
 
-    return HttpResponse(json.dumps(resp), content_type="application/json")
+    return redirect('/books')
 
 @login_required
 def view_book(request, pk = None):
@@ -414,7 +399,7 @@ def view_book(request, pk = None):
     if pk is None:
         context['book'] = {}
     else:
-        context['book'] = models.Books.objects.get(id=pk)
+        context['book'] = models.Book.objects.get(id=pk)
     
     return render(request, 'view_book.html', context)
 
@@ -425,6 +410,11 @@ def manage_book(request, pk = None):
     context['page'] = 'manage_book'
     context['page_title'] = 'Manage Book'
     context['categories'] = categories
+    action = request.GET.get('action')
+    if action == 'create':
+        context['create'] = 'true'
+    else:
+        context['create'] = 'false'
     if pk is None:
         context['book'] = {}
     else:

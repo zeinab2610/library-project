@@ -1,4 +1,4 @@
- {% load static %} {% load humanize %}
+ {% load static %}
 <style>
     #uni_modal .modal-footer {
         display: none
@@ -29,7 +29,7 @@
             <dd class="ps-4">{{book.author}}</dd>
            
             <dt>Date Published</dt>
-            <dd class="ps-4">{{book.publication_date|date:"F d, Y h:i A"}}</dd>
+            <dd class="ps-4">{{book.publication_date|date:"F d, Y "}}</dd>
         
         </dl>
     </div>

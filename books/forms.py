@@ -57,7 +57,6 @@ class SaveUser(UserCreationForm):
     email = forms.EmailField(max_length=250,help_text="The Email field is required.")
     first_name = forms.CharField(max_length=250,help_text="The First Name field is required.")
     last_name = forms.CharField(max_length=250,help_text="The Last Name field is required.")
-    current_password = forms.CharField(max_length=250)
 
     class Meta:
         model = User

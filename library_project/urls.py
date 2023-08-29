@@ -26,8 +26,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 urlpatterns = [
     path('admin', admin.site.urls),
-    path('update_category/<int:id>', views.update_category),
-    path('books/update_books/<int:id>', views.update_book),
     path('',views.home, name="home-page"),
     path('login/',views.login_page,name='login-page'),
     path('register',views.userregister,name='register-page'),
@@ -36,6 +34,7 @@ urlpatterns = [
     path('home',views.home,name='home-page'),
     path('logout',views.logout_user,name='logout'),
     path('update_password',views.update_password,name='update-password'),
+   
     path('users',views.users,name='user-page'),
     path('manage_user',views.manage_user,name='manage-user'),
     path('manage_user/<int:pk>',views.manage_user,name='manage-user-pk'),

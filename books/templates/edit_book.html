@@ -1,6 +1,5 @@
 {% extends 'base.html' %} {% load static %} {% block pageContent %}
 
-<div class="modal fade show" id="uni_modal" style="display: block;" aria-modal="true" role="dialog">
     <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
         <div class="modal-content rounded-0">
             <div class="modal-header">
@@ -36,11 +35,11 @@
                         </div>
                         <div class="mb-3">
                             <label for="title" class="control-label">Title</label>
-                            <input type="text" id="title" name="title" class="form-control form-control-sm rounded-0" value="{{book.id}}" required="">
+                            <input type="text" id="title" name="title" class="form-control form-control-sm rounded-0" value="{{book.title}}" required="">
                         </div>
                         <div class="mb-3">
                             <label for="author" class="control-label">Author/s</label>
-                            <textarea rows="3" id="author" name="author" class="form-control form-control-sm rounded-0" required="">{{book.id}}</textarea>
+                            <textarea rows="3" id="author" name="author" class="form-control form-control-sm rounded-0" required="">{{book.author}}</textarea>
                         </div>
                         <div class="mb-3">
                             <label for="date_published" class="control-label">Date Published</label>
@@ -56,5 +55,5 @@
             
         </div>
     </div>
-</div>
+
 {% endblock pageContent %} 

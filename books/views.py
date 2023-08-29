@@ -318,7 +318,6 @@ def view_category(request, pk = None):
 @login_required
 def edit_category(request, category_id):
     category = get_object_or_404(Category, id=category_id)
-    print(category.description)
     if request.method == 'POST':
         form = CategoryForm(request.POST, instance=category)
         if form.is_valid():
@@ -357,26 +356,6 @@ def edit_book(request, book_id):
     return render(request, 'edit_book.html', context)
 
 
-
-
-
-# def edit_category(request, pk = None):
-#     context = context_data(request)
-#     context['page'] = 'manage_category'
-#     context['page_title'] = 'Manage Category'
-#     action = request.GET.get('action')
-#     if action == 'create':
-#         context['create'] = 'true'
-#     else:
-#         context['create'] = 'false'
-
-#     if pk is None:
-#         context['category'] = {}
-#     else:
-#         context['category'] = models.Category.objects.get(id=pk)
-       
-    
-#     return render(request, 'manage_category.html', context)
 
 @login_required
 def create_category(request, pk = None):
@@ -455,54 +434,3 @@ def delete_book(request, pk = None):
 
     return HttpResponse(json.dumps(resp), content_type="application/json")
 
-
-    context = context_data(request)
-    context['page'] = 'manage_student'
-    context['page_title'] = 'Manage Student'
-    if pk is None:
-        context['student'] = {}
-    else:
-        context['student'] = models.Students.objects.get(id=pk)
-    return render(request, 'manage_student.html', context)
-
-
-    resp = { 'status': 'failed', 'msg' : '' }
-    if request.method == 'POST':
-        post = request.POST
-        if not post['id'] == '':
-            borrow = models.Borrow.objects.get(id = post['id'])
-            form = forms.SaveBorrow(request.POST, instance=borrow)
-        else:
-            form = forms.SaveBorrow(request.POST) 
-
-        if form.is_valid():
-            form.save()
-            if post['id'] == '':
-                messages.success(request, "Borrowing Transaction has been saved successfully.")
-            else:
-                messages.success(request, "Borrowing Transaction has been updated successfully.")
-            resp['status'] = 'success'
-        else:
-            for field in form:
-                for error in field.errors:
-                    if not resp['msg'] == '':
-                        resp['msg'] += str('<br/>')
-                    resp['msg'] += str(f'[{field.name}] {error}')
-    else:
-         resp['msg'] = "There's no data sent on the request"
-
-    return HttpResponse(json.dumps(resp), content_type="application/json")
-
-
-    resp = { 'status' : 'failed', 'msg':''}
-    if pk is None:
-        resp['msg'] = 'Transaction ID is invalid'
-    else:
-        try:
-            models.Borrow.objects.filter(pk = pk).delete()
-            messages.success(request, "Transaction has been deleted successfully.")
-            resp['status'] = 'success'
-        except:
-            resp['msg'] = "Deleting Transaction Failed"
-
-    return HttpResponse(json.dumps(resp), content_type="application/json")

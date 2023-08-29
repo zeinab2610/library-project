@@ -35,10 +35,17 @@
                         <select type="text" id="category_id" name="category_id"
                             class="form-select form-select-sm rounded-0" required="">
                             {% for category in categories %}
-                            <option value="{{ category.id}}" {% if book.category_id and book.category_id=category
-                                %}selected>{% endfor %}
+                            {% if book.category_id and book.category_id.id == category.id %}
+                            {% with selected="selected" %}
+                            <option value="{{ category.id }}" {{ selected }}>
                                 {{ category.name }}
                             </option>
+                            {% endwith %}
+                            {% else %}
+                            <option value="{{ category.id }}">
+                                {{ category.name }}
+                            </option>
+                            {% endif %}
                             {% endfor %}
                         </select>
 

@@ -7,6 +7,7 @@ from sys import prefix
 from unicodedata import category
 from django import forms
 from numpy import require
+from django.core.exceptions import ValidationError  # Import ValidationError
 
 from django.contrib.auth.forms import UserCreationForm,PasswordChangeForm, UserChangeForm
 from django.contrib.auth.models import User
@@ -25,19 +26,12 @@ class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
         fields = "__all__"
-
     def clean_name(self):
-        id = self.data['id'] if (self.data['id']).isnumeric() else 0
         name = self.cleaned_data['name']
-        try:
-            if id > 0:
-                category = models.Category.objects.exclude(id = id).get(name = name, delete_flag = 0)
-            else:
-                category = models.Category.objects.get(name = name, delete_flag = 0)
-        except:
-            return name
-        raise forms.ValidationError("Category Name already exists.")
-        created_at = forms.DateField(required=False)  # Set required to False
+        existing_category = Category.objects.filter(name=name).exclude(pk=self.instance.pk)
+        if existing_category.exists():
+            raise ValidationError("A category with this name already exists.")
+        return name
 
 
 

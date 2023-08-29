@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from books.forms import BooksForm, CategoryForm
 from books.models import Book, Category
 import datetime
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 import json
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -206,7 +206,9 @@ def users(request):
 @login_required
 def save_user(request):
     resp = { 'status': 'failed', 'msg' : '' }
+    print(request.method)
     if request.method == 'POST':
+        print('HERR')
         post = request.POST
         if not post['id'] == '':
             user = User.objects.get(id = post['id'])
@@ -267,8 +269,28 @@ def category(request):
     context['category'] = models.Category.objects.all()
     return render(request, 'category.html', context)
 
-@login_required
 def save_category(request):
+    resp = { 'status' : 'failed', 'msg':''}
+
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            category = form.save()  # Save the form data
+            # Redirect to the edit category page with the category ID
+            return redirect('edit-category', category_id=category.id)
+
+
+        else:
+            messages.error(request,"jsdjsajsdd")
+            # Form is not valid, render the template with the form and errors
+            # return render(request, 'create_category.html', {'form': form})
+    else:
+        form = CategoryForm()
+    return redirect('create-category')
+
+
+# @login_required
+# def save_category(request):
     resp = { 'status': 'failed', 'msg' : '' }
     if request.method == 'POST':
         post = request.POST
@@ -279,18 +301,7 @@ def save_category(request):
             form = forms.CategoryForm(request.POST) 
 
         if form.is_valid():
-            print(form.cleaned_data)
-            if not form.cleaned_data['name']:
-                print("no name")
-                form.add_error('name', 'Name is required.')
-            if not form.cleaned_data['description']:
-                form.add_error('description', 'Description is required.')
-
-            if form.errors:
-                # There are errors, render the form again with errors
-                return render(request, 'manage_category.html', {'form': form})
             form.save()
-
             if post['id'] == '':
                 messages.success(request, "Category has been saved successfully.")
             else:
@@ -305,8 +316,7 @@ def save_category(request):
     else:
          resp['msg'] = "There's no data sent on the request"
 
-  
-    return redirect('/category')
+    return HttpResponse(json.dumps(resp), content_type="application/json")
     
 @login_required
 def view_category(request, pk = None):
@@ -321,23 +331,56 @@ def view_category(request, pk = None):
     return render(request, 'view_category.html', context)
 
 @login_required
-def manage_category(request, pk = None):
+def edit_category(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    print(category.description)
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Category updated successfully.')
+            return redirect('edit-category', category_id=category_id)
+    else:
+        form = CategoryForm(instance=category)
+    
+    context = {
+        'form': form,
+        'category': category,
+    }
+    return render(request, 'edit_category.html', context)
+
+
+
+
+
+
+# def edit_category(request, pk = None):
+#     context = context_data(request)
+#     context['page'] = 'manage_category'
+#     context['page_title'] = 'Manage Category'
+#     action = request.GET.get('action')
+#     if action == 'create':
+#         context['create'] = 'true'
+#     else:
+#         context['create'] = 'false'
+
+#     if pk is None:
+#         context['category'] = {}
+#     else:
+#         context['category'] = models.Category.objects.get(id=pk)
+       
+    
+#     return render(request, 'manage_category.html', context)
+
+@login_required
+def create_category(request, pk = None):
     context = context_data(request)
     context['page'] = 'manage_category'
     context['page_title'] = 'Manage Category'
-    action = request.GET.get('action')
-    if action == 'create':
-        context['create'] = 'true'
-    else:
-        context['create'] = 'false'
-
-    if pk is None:
-        context['category'] = {}
-    else:
-        context['category'] = models.Category.objects.get(id=pk)
+   
        
     
-    return render(request, 'manage_category.html', context)
+    return render(request, 'create_category.html', context)
 
 @login_required
 def delete_category(request, pk = None):

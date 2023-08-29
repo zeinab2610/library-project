@@ -16,8 +16,11 @@
         <div class="card rounded-0 shadow">
             <div class="card-body">
                 <div class="container-fluid">
-                    <div class="text-end mb-3">
-                        <button class="btn btn-sm btn-primary rounded-0 bg-gradient-primary" type="button" id="create_new"><i class="fa fa-plus"></i> Add New</button>
+                
+                    <div class="container-fluid container-fluid d-flex justify-content-end m-2">
+                        <a href="{% url 'create-category' %}" class="btn btn-primary btn-sm" id="create_new">
+                            <i class="fa fa-plus"></i> Add New Category
+                        </a>
                     </div>
                     <table class="table table-bordered table-striped" id="category-tbl">
                         <colcategory>
@@ -48,7 +51,7 @@
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="abtn{{cat.pk}}">
                                             <li><a class="dropdown-item view-data" href="javascript:void(0)" data-url="{% url 'view-category-pk' cat.pk %}"><i class="fa fa-eye text-dark"></i> View</a></li>
-                                            <li><a class="dropdown-item edit-data" href="javascript:void(0)" data-url="{% url 'manage-category-pk' cat.pk %}"><i class="fa fa-edit text-primary"></i> Edit</a></li>
+                                            <li><a class="dropdown-item edit-data" href="javascript:void(0)" data-url="{% url 'edit-category' cat.pk %}"><i class="fa fa-edit text-primary"></i> Edit</a></li>
                                             <li><a class="dropdown-item delete-data" href="javascript:void(0)" data-url="{% url 'delete-category' cat.pk %}"><i class="fa fa-trash text-danger"></i> Delete</a></li>
                                         </ul>
                                     </div>
@@ -66,13 +69,15 @@
 <script>
     $(function() {
         $('#create_new').click(function() {
-            uni_modal("<i class='fa fa-plus'></i> Add New Category", "{% url 'manage-category' %}?action=create");        })
+            uni_modal("<i class='fa fa-plus'></i> Add New Category", "{% url 'create-category' %}");        })
         $('.view-data').click(function() {
             uni_modal("<i class='fa fa-th-list'></i> Category Details", $(this).attr('data-url'))
         })
         $('.edit-data').click(function() {
-            uni_modal("<i class='fa fa-edit'></i> Edit Category Details", $(this).attr('data-url'))
-        })
+            var url = $(this).data('url');
+            
+            // Redirect the user to the specified URL
+            window.location.href = url;        })
         $('.view_image').click(function() {
             var img = $(this).attr('data-img-url')
             $('#viewer_modal #img-viewer-field').attr('src', img)

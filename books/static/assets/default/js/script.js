@@ -1,7 +1,9 @@
+// Define a loader element for displaying loading animations
 const loader = $('<div>')
 loader.attr('id', 'pre-loader')
 loader.html('<div class="lds-facebook"><div></div><div></div><div></div></div>')
 
+// Function to start the loader animation
 window.start_loader = function () {
     $('body').removeClass('loading')
     if ($('#pre-loader').length > 0)
@@ -9,11 +11,15 @@ window.start_loader = function () {
     $('body').append(loader)
     $('body').addClass('loading')
 }
+
+// Function to stop the loader animation
 window.end_loader = function () {
     if ($('#pre-loader').length > 0)
         $('#pre-loader').remove();
     $('body').removeClass('loading')
 }
+
+// Function to open a modal and load content from a URL
 window.uni_modal = function ($title = '', $url = '', $size = "") {
     start_loader()
     $.ajax({
@@ -42,6 +48,8 @@ window.uni_modal = function ($title = '', $url = '', $size = "") {
         }
     })
 }
+
+// Function to show a confirmation modal with a specified message and action
 window._conf = function ($msg = '', $func = '', $params = []) {
     $('#confirm_modal #confirm').attr('onclick', $func + "(" + $params.join(',') + ")")
     $('#confirm_modal .modal-body').html($msg)
@@ -50,6 +58,7 @@ window._conf = function ($msg = '', $func = '', $params = []) {
 
 $(function () {
 
+    // Highlight the active navigation link based on the current page
     $('#topNav .nav-link').each(function () {
         var current = '{{ request.get_full_path | urlencode }}'
         if (current == $(this).attr('href')) {
@@ -57,14 +66,15 @@ $(function () {
         }
     })
 
+    // Initialize the viewer modal and its zoom functionality
     $('#viewer_modal').on('shown.modal.bs', function () {
         $('#zoom-value').val(100)
         $('#img-viewer img').css(
             'transform',
             'scale(1)'
         )
-
     })
+
     $('#zoom-plus').click(function () {
         var scale = parseFloat($('#zoom-value').val())
         if (scale >= 200) return false;
@@ -76,6 +86,7 @@ $(function () {
             'scale(' + (scale) + ')'
         )
     })
+
     $('#zoom-minus').click(function () {
         var scale = parseFloat($('#zoom-value').val())
         if (scale <= 0) return false;
@@ -88,6 +99,7 @@ $(function () {
         )
     })
 
+    // Initialize the DataTable for books
     $('#book-tbl').find('td, th').addClass('px-2 py-1 align-middle')
     $('#book-tbl').DataTable({
         columnDefs: [{
@@ -137,6 +149,7 @@ $(function () {
 
 })
 
+// Function to delete a book using AJAX
 function delete_book(url) {
 
     var _this = $('#confirm_modal .modal-body')
@@ -174,6 +187,7 @@ function delete_book(url) {
     })
 }
 
+// Function to delete a category using AJAX
 function delete_category(url) {
 
     var _this = $('#confirm_modal .modal-body')

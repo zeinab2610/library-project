@@ -8,12 +8,16 @@ from numpy import require
 from django.core.exceptions import ValidationError 
 
 class BooksForm(forms.ModelForm):
+    """Form for creating and updating books."""
+
     class Meta:
         model = Book
         fields = "__all__"
     publicationDate = forms.DateField(required=False)
     
     def clean_name(self):
+        """Custom validation to check for duplicate book names."""
+
         name = self.cleaned_data['name']
         existing_book = Book.objects.filter(name=name).exclude(pk=self.instance.pk)
         if existing_book.exists():
@@ -21,6 +25,8 @@ class BooksForm(forms.ModelForm):
         return name
 
 class CategoryForm(forms.ModelForm):
+    """Form for creating and updating categories."""
+
     name = forms.CharField(max_length=250)
     description = forms.Textarea()
 
@@ -29,6 +35,8 @@ class CategoryForm(forms.ModelForm):
         fields = "__all__"
         
     def clean_name(self):
+        """Custom validation to check for duplicate category names."""
+
         name = self.cleaned_data['name']
         existing_category = Category.objects.filter(name=name).exclude(pk=self.instance.pk)
         if existing_category.exists():

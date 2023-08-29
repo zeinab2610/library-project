@@ -10,6 +10,8 @@ from django.contrib.auth.decorators import login_required
 
 
 def context_data(request):
+    """Generate and return common context data for templates."""
+
     fullpath = request.get_full_path()
     abs_uri = request.build_absolute_uri()
     abs_uri = abs_uri.split(fullpath)[0]
@@ -23,57 +25,6 @@ def context_data(request):
     }
 
     return context
-
-
-def userregister(request):
-    context = context_data(request)
-    context['topbar'] = False
-    context['footer'] = False
-    context['page_title'] = "User Registration"
-    if request.user.is_authenticated:
-        return redirect("home-page")
-    return render(request, 'register.html', context)
-
-
-def save_register(request):
-    resp = {'status': 'failed', 'msg': ''}
-    if not request.method == 'POST':
-        resp['msg'] = "No data has been sent on this request"
-    else:
-        form = forms.SaveUser(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(
-                request, "Your Account has been created succesfully")
-            resp['status'] = 'success'
-        else:
-            for field in form:
-                for error in field.errors:
-                    if resp['msg'] != '':
-                        resp['msg'] += str('<br />')
-                    resp['msg'] += str(f"[{field.name}] {error}.")
-
-    return HttpResponse(json.dumps(resp), content_type="application/json")
-
-
-@login_required
-def update_password(request):
-    context = context_data(request)
-    context['page_title'] = "Update Password"
-    if request.method == 'POST':
-        form = forms.UpdatePasswords(user=request.user, data=request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(
-                request, "Your Account Password has been updated successfully")
-            update_session_auth_hash(request, form.user)
-            return redirect("profile-page")
-        else:
-            context['form'] = form
-    else:
-        form = forms.UpdatePasswords(request.POST)
-        context['form'] = form
-    return render(request, 'update_password.html', context)
 
 
 def login_page(request):
@@ -133,14 +84,24 @@ def category(request):
 
 
 @login_required
+def create_category(request, pk=None):
+    context = context_data(request)
+    context['page'] = 'manage_category'
+    context['page_title'] = 'Manage Category'
+
+    return render(request, 'create_category.html', context)
+
+
+@login_required
 def save_category(request):
+    """Handle creation of a category."""
+
     resp = {'status': 'failed', 'msg': ''}
 
     if request.method == 'POST':
         form = CategoryForm(request.POST)
         if form.is_valid():
-            category = form.save()  # Save the form data
-            # Redirect to the edit category page with the category ID
+            category = form.save()
             messages.success(request, "Category is created successfully")
             return redirect('edit-category', category_id=category.id)
 
@@ -154,7 +115,32 @@ def save_category(request):
 
 
 @login_required
+def edit_category(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Category updated successfully.')
+            return redirect('edit-category', category_id=category_id)
+        else:
+            messages.error(request, 'Category with same name exist')
+
+    else:
+        form = CategoryForm(instance=category)
+
+    context = {
+        'form': form,
+        'category': category,
+    }
+    return render(request, 'edit_category.html', context)
+
+
+@login_required
 def update_category(request, id):
+    """Handle updating of a category."""
+
     category = Category.objects.get(id=id)
     form = CategoryForm(request.POST, instance=category)
     if form.is_valid():
@@ -182,39 +168,9 @@ def view_category(request, pk=None):
 
 
 @login_required
-def edit_category(request, category_id):
-    category = get_object_or_404(Category, id=category_id)
-
-    if request.method == 'POST':
-        form = CategoryForm(request.POST, instance=category)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Category updated successfully.')
-            return redirect('edit-category', category_id=category_id)
-        else:
-            messages.error(request, 'Category with same name exist')
-
-    else:
-        form = CategoryForm(instance=category)
-
-    context = {
-        'form': form,
-        'category': category,
-    }
-    return render(request, 'edit_category.html', context)
-
-
-@login_required
-def create_category(request, pk=None):
-    context = context_data(request)
-    context['page'] = 'manage_category'
-    context['page_title'] = 'Manage Category'
-
-    return render(request, 'create_category.html', context)
-
-
-@login_required
 def delete_category(request, pk=None):
+    """Handle deletion of a category."""
+
     resp = {'status': 'failed', 'msg': ''}
     if pk is None:
         resp['msg'] = 'Category ID is invalid'
@@ -238,19 +194,6 @@ def books(request):
     return render(request, 'books.html', context)
 
 
-@login_required
-def view_book(request, pk=None):
-    context = context_data(request)
-    context['page'] = 'view_book'
-    context['page_title'] = 'View Book'
-    if pk is None:
-        context['book'] = {}
-    else:
-        context['book'] = models.Book.objects.get(id=pk)
-
-    return render(request, 'view_book.html', context)
-
-
 def create_book(request):
     context = context_data(request)
     categories = Category.objects.all()
@@ -261,7 +204,10 @@ def create_book(request):
     return render(request, 'create_book.html', context)
 
 
+@login_required
 def save_book(request):
+    """Handle creation of a book."""
+
     resp = {'status': 'failed', 'msg': ''}
 
     if request.method == 'POST':
@@ -273,30 +219,15 @@ def save_book(request):
 
         else:
             messages.error(request, "jsdjsajsdd")
-         
+
     else:
         form = BooksForm()
     return redirect('create-book')
 
 
-def update_book(request, id):
-    book = Book.objects.get(id=id)
-    form = BooksForm(request.POST, instance=book)
-    if form.is_valid():
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Book is  updated successfully.')
-            return redirect('/books')
-    else:
-        messages.error(
-            request, 'Error updating category. Please check your input.')
-        return redirect('/books')
-
-    return redirect('/books')
-
-
 @login_required
 def edit_book(request, book_id):
+
     book = get_object_or_404(Book, id=book_id)
     categories = Category.objects.all()
     print(book.category_id.id)
@@ -320,7 +251,41 @@ def edit_book(request, book_id):
 
 
 @login_required
+def update_book(request, id):
+    """Handle editing of a book."""
+
+    book = Book.objects.get(id=id)
+    form = BooksForm(request.POST, instance=book)
+    if form.is_valid():
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Book is  updated successfully.')
+            return redirect('/books')
+    else:
+        messages.error(
+            request, 'Error updating category. Please check your input.')
+        return redirect('/books')
+
+    return redirect('/books')
+
+
+@login_required
+def view_book(request, pk=None):
+    context = context_data(request)
+    context['page'] = 'view_book'
+    context['page_title'] = 'View Book'
+    if pk is None:
+        context['book'] = {}
+    else:
+        context['book'] = models.Book.objects.get(id=pk)
+
+    return render(request, 'view_book.html', context)
+
+
+@login_required
 def delete_book(request, pk=None):
+    """Handle deletion of a book."""
+
     resp = {'status': 'failed', 'msg': ''}
     if pk is None:
         resp['msg'] = 'Book ID is invalid'

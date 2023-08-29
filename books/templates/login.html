@@ -5,7 +5,7 @@
         background-repeat: no-repeat;
         background-size: cover;
     }
-    
+
     main {
         height: 100%;
         width: 100%;
@@ -13,19 +13,6 @@
         align-items: center;
         justify-content: center;
         overflow: auto;
-    }
-    
-    #logo-img {
-        height: 7em;
-        width: 7em;
-        object-fit: cover;
-        object-position: center center;
-    }
-    
-    #page-title {
-        font-size: 3em;
-        color: #000;
-        font-family: cursive;
     }
 </style>
 <div class="d-flex flex-column w-100 justify-content-center align-items-center">
@@ -45,11 +32,13 @@
                             <div class="mdc-layout-grid__inner">
                                 <div class="form-group mb-3">
                                     <label for="username" class="control-label">Username</label>
-                                    <input type="text" class="form-control rounded-0" autofocus name="username" id="username" required="required">
+                                    <input type="text" class="form-control rounded-0" autofocus name="username"
+                                        id="username" required="required">
                                 </div>
                                 <div class="form-group mb-3">
                                     <label for="password" class="control-label">Password</label>
-                                    <input type="password" class="form-control rounded-0" autofocus name="password" id="password" required="required">
+                                    <input type="password" class="form-control rounded-0" autofocus name="password"
+                                        id="password" required="required">
                                 </div>
                                 <div class="form-group mb-3">
                                     <div class="d-flex w-100 justify-content-center align-items-center">
@@ -69,8 +58,8 @@
 
 {% endblock pageContent %} {% block ScriptBlock %}
 <script>
-    $(function() {
-        $('#login-user').submit(function(e) {
+    $(function () {
+        $('#login-user').submit(function (e) {
             e.preventDefault();
             var _this = $(this)
             $('.err-msg').remove();
@@ -99,7 +88,7 @@
                     alert("An error occured", 'error');
                     end_loader();
                 },
-                success: function(resp) {
+                success: function (resp) {
                     if (typeof resp == 'object' && resp.status == 'success') {
                         el.removeClass("alert alert-danger err-msg")
                         location.href = "{% url 'home-page' %}"

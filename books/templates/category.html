@@ -1,12 +1,5 @@
 {% extends 'base.html' %} {% load static %} {% block pageContent %}
-<style>
-    .al-logo {
-        height: 3em;
-        width: 3em;
-        object-fit: scale-down;
-        object-position: center center;
-    }
-</style>
+
 <section class="py-4">
     <div class="container">
         <h3 class="fw-bolder text-center">List of Categories</h3>
@@ -16,10 +9,9 @@
         <div class="card rounded-0 shadow">
             <div class="card-body">
                 <div class="container-fluid">
-                
                     <div class="container-fluid container-fluid d-flex justify-content-end m-2">
                         <a href="{% url 'create-category' %}" class="btn btn-primary btn-sm" id="create_new">
-                            <i class="fa fa-plus"></i> Add New Category
+                            <i class="fa fa-plus"></i> Add New
                         </a>
                     </div>
                     <table class="table table-bordered table-striped" id="category-tbl">
@@ -27,7 +19,7 @@
                             <col width="33%">
                             <col width="33%">
                             <col width="33%">
-                        
+
                         </colcategory>
                         <thead>
                             <tr>
@@ -43,16 +35,24 @@
                                 <td>
                                     <p class="m-0 truncate-1">{{ cat.description|safe }}</p>
                                 </td>
-                            
+
                                 <td class="text-center">
                                     <div class="dropdown">
-                                        <button class="btn btn-light btn-sm rounded-0 border dropdown-toggle" type="button" id="abtn{{cat.pk}}" data-bs-toggle="dropdown" aria-expanded="false">
-                                          Action
+                                        <button class="btn btn-light btn-sm rounded-0 border dropdown-toggle"
+                                            type="button" id="abtn{{cat.pk}}" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            Action
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="abtn{{cat.pk}}">
-                                            <li><a class="dropdown-item view-data" href="javascript:void(0)" data-url="{% url 'view-category-pk' cat.pk %}"><i class="fa fa-eye text-dark"></i> View</a></li>
-                                            <li><a class="dropdown-item edit-data" href="javascript:void(0)" data-url="{% url 'edit-category' cat.pk %}"><i class="fa fa-edit text-primary"></i> Edit</a></li>
-                                            <li><a class="dropdown-item delete-data" href="javascript:void(0)" data-url="{% url 'delete-category' cat.pk %}"><i class="fa fa-trash text-danger"></i> Delete</a></li>
+                                            <li><a class="dropdown-item view-data-category" href="javascript:void(0)"
+                                                    data-url="{% url 'view-category-pk' cat.pk %}"><i
+                                                        class="fa fa-eye text-dark"></i> View</a></li>
+                                            <li><a class="dropdown-item edit-data" href="javascript:void(0)"
+                                                    data-url="{% url 'edit-category' cat.pk %}"><i
+                                                        class="fa fa-edit text-primary"></i> Edit</a></li>
+                                            <li><a class="dropdown-item delete-data-category" href="javascript:void(0)"
+                                                    data-url="{% url 'delete-category' cat.pk %}"><i
+                                                        class="fa fa-trash text-danger"></i> Delete</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -65,70 +65,6 @@
         </div>
     </div>
 </section>
+
 {% endblock pageContent %} {% block ScriptBlock %}
-<script>
-    $(function() {
-        $('.view-data').click(function() {
-            uni_modal("<i class='fa fa-th-list'></i> Category Details", $(this).attr('data-url'))
-        })
-        $('.edit-data').click(function() {
-            var url = $(this).data('url');
-            
-            // Redirect the user to the specified URL
-            window.location.href = url;        })
-    
-        $('.delete-data').click(function() {
-            _conf("Are you sure to delete this Category?", 'delete_category', ["'" + $(this).attr('data-url') + "'"])
-        })
-        
-        $('#category-tbl').find('td, th').addClass('px-2 py-1 align-middle')
-        $('#category-tbl').DataTable({
-            columnDefs: [{
-                orderable: false,
-                targets: [2]
-            }],
-            lengthMenu: [
-                [25, 50, 100, -1],
-                [25, 50, 100, "All"]
-            ]
-        })
-    })
-
-    function delete_category(url) {
-
-        var _this = $('#confirm_modal .modal-body')
-        $('.err-msg').remove();
-        var el = $('<div>')
-        el.addClass("alert alert-danger err-msg")
-        el.hide()
-        start_loader()
-        $.ajax({
-            headers: {
-                "X-CSRFToken": "{{csrf_token}}"
-            },
-            url: url,
-            dataType: 'JSON',
-            error: err => {
-                console.log(err)
-                alert("an error occurred.")
-                end_loader()
-            },
-            success: function(resp) {
-                if (resp.status == 'success') {
-                    location.reload()
-                } else if (!!resp.msg) {
-                    el.html(resp.msg)
-                    _this.prepend(el)
-                    el.show()
-                } else {
-                    el.html("An error occurred")
-                    _this.prepend(el)
-                    el.show()
-                }
-                end_loader()
-            }
-
-        })
-    }
-</script>
 {% endblock ScriptBlock %}

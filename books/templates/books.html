@@ -12,19 +12,19 @@
                         <a href="{% url 'create-book' %}" class="btn btn-primary btn-sm" id="create_new">
                             <i class="fa fa-plus"></i> Add New
                         </a>
-                        </div>
+                    </div>
                     <table class="table table-bordered table-striped" id="book-tbl">
                         <colgroup>
                             <col width="20%">
                             <col width="20%">
                             <col width="20%">
                             <col width="20%">
-                          
+
                         </colgroup>
                         <thead>
                             <tr>
                                 <th class="text-center">Title</th>
-                                <th class="text-center">Author</th> 
+                                <th class="text-center">Author</th>
                                 <th class="text-center">Category</th>
                                 <th class="text-center">Publication Date</th>
                                 <th class="text-center">Action</th>
@@ -33,8 +33,8 @@
                         <tbody>
                             {% for book in books %}
                             <tr>
-                         <td>{{ book.title }}</td>
-                         <td>{{ book.author}}</td>
+                                <td>{{ book.title }}</td>
+                                <td>{{ book.author}}</td>
                                 <td>
                                     <div class="lh-1">
                                         <div>{{ book.category_id.name}}</div>
@@ -43,13 +43,21 @@
                                 <td>{{ book.publication_date|date:"Y-m-d"}}</td>
                                 <td class="text-center">
                                     <div class="dropdown">
-                                        <button class="btn btn-light btn-sm rounded-0 border dropdown-toggle" type="button" id="abtn{{book.pk}}" data-bs-toggle="dropdown" aria-expanded="false">
-                                          Action
+                                        <button class="btn btn-light btn-sm rounded-0 border dropdown-toggle"
+                                            type="button" id="abtn{{book.pk}}" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            Action
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="abtn{{book.pk}}">
-                                            <li><a class="dropdown-item view-data" href="javascript:void(0)" data-url="{% url 'view-book-pk' book.pk %}"><i class="fa fa-eye text-dark"></i> View</a></li>
-                                            <li><a class="dropdown-item edit-data" href="javascript:void(0)" data-url="{% url 'edit-book' book.pk %}"><i class="fa fa-edit text-primary"></i> Edit</a></li>
-                                            <li><a class="dropdown-item delete-data" href="javascript:void(0)" data-url="{% url 'delete-book' book.pk %}"><i class="fa fa-trash text-danger"></i> Delete</a></li>
+                                            <li><a class="dropdown-item view-data-book" href="javascript:void(0)"
+                                                    data-url="{% url 'view-book-pk' book.pk %}"><i
+                                                        class="fa fa-eye text-dark"></i> View</a></li>
+                                            <li><a class="dropdown-item edit-data" href="javascript:void(0)"
+                                                    data-url="{% url 'edit-book' book.pk %}"><i
+                                                        class="fa fa-edit text-primary"></i> Edit</a></li>
+                                            <li><a class="dropdown-item delete-data-book" href="javascript:void(0)"
+                                                    data-url="{% url 'delete-book' book.pk %}"><i
+                                                        class="fa fa-trash text-danger"></i> Delete</a></li>
                                         </ul>
                                     </div>
                                 </td>
@@ -63,69 +71,4 @@
     </div>
 </section>
 {% endblock pageContent %} {% block ScriptBlock %}
-<script>
-    $(function() {
-      
-        $('.edit-data').click(function() {
-            var url = $(this).data('url');
-            
-            // Redirect the user to the specified URL
-            window.location.href = url;        })
-        $('.view-data').click(function() {
-            uni_modal("<i class='fa fa-th-list'></i> Book Details", $(this).attr('data-url'))
-        })
-       
-        $('.delete-data').click(function() {
-            _conf("Are you sure to delete this Book?", 'delete_book', ["'" + $(this).attr('data-url') + "'"])
-        })
-        $('#book-tbl').find('td, th').addClass('px-2 py-1 align-middle')
-        $('#book-tbl').DataTable({
-            columnDefs: [{
-                orderable: false,
-                targets: [2]
-            }],
-            lengthMenu: [
-                [25, 50, 100, -1],
-                [25, 50, 100, "All"]
-            ]
-        })
-    })
-
-    function delete_book(url) {
-
-        var _this = $('#confirm_modal .modal-body')
-        $('.err-msg').remove();
-        var el = $('<div>')
-        el.addClass("alert alert-danger err-msg")
-        el.hide()
-        start_loader()
-        $.ajax({
-            headers: {
-                "X-CSRFToken": "{{csrf_token}}"
-            },
-            url: url,
-            dataType: 'JSON',
-            error: err => {
-                console.log(err)
-                alert("an error occurred.")
-                end_loader()
-            },
-            success: function(resp) {
-                if (resp.status == 'success') {
-                    location.reload()
-                } else if (!!resp.msg) {
-                    el.html(resp.msg)
-                    _this.prepend(el)
-                    el.show()
-                } else {
-                    el.html("An error occurred")
-                    _this.prepend(el)
-                    el.show()
-                }
-                end_loader()
-            }
-
-        })
-    }
-</script>
 {% endblock ScriptBlock %}

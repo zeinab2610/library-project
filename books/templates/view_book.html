@@ -1,36 +1,19 @@
- {% load static %}
-<style>
-    #uni_modal .modal-footer {
-        display: none
-    }
-    
-    #uni_modal .modal-sub-footer {
-        display: flex
-    }
-    
-    #book-img {
-        max-width: 100%;
-        max-height: 10em;
-        object-fit: scale-down;
-        object-position: center center
-    }
-</style>
+{% load static %}
 <div class="container-fluid" id="e-details">
     <div class="">
         <dl>
             <dt>Category</dt>
             <dd class="ps-4">{{book.sub_category.category}}</dd>
 
-           
             <dt>Title</dt>
             <dd class="ps-4">{{book.title}}</dd>
-        
+
             <dt>Author</dt>
             <dd class="ps-4">{{book.author}}</dd>
-           
+
             <dt>Date Published</dt>
             <dd class="ps-4">{{book.publication_date|date:"F d, Y "}}</dd>
-        
+
         </dl>
     </div>
 </div>

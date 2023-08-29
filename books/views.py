@@ -14,46 +14,13 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def create_book(request):
-    if request.method == "POST":
-        form = BooksForm(request.POST)
-        if form.is_valid():
-            try:
-                form.save()
-                return redirect('/view')
-            except:
-                pass
-    else:
-        form = BooksForm()
-    return render(request,'index.html',{'form': form})
-
-def view(request):
-    books = Book.objects.all()
-    return render(request,"view.html",{'books':books})
-
-def delete(request, id):
-    books = Book.objects.get(id=id)
-    books.delete()
-    return redirect("/view")
-
-def edit(request, id):
-    book = Book.objects.get(id=id)
-    return render(request, 'edit.html',{'book': book})
-
-def update(request, id):
-    book = Book.objects.get(id=id)
-    form = BooksForm(request.POST,instance = book)
-    print(form.is_valid())
-    if form.is_valid():
-            print('hii')
-            try:
-                form.save()
-                return redirect('/view')
-            except:
-                pass
-   
-    return render(request,'index.html',{'form': form})
-    # return render(request, 'edit.html',{'book': book})
-
+    context = context_data(request)
+    categories = Category.objects.all()
+    context['page'] = 'manage_book'
+    context['page_title'] = 'Manage Book'
+    context['categories'] = categories
+    
+    return render(request, 'create_book.html', context)
 
 
 def update_category(request, id):
@@ -144,7 +111,6 @@ def update_password(request):
         context['form'] = form
     return render(request,'update_password.html',context)
 
-# Create your views here.
 def login_page(request):
     context = context_data(request)
     context['topbar'] = False
@@ -288,6 +254,25 @@ def save_category(request):
         form = CategoryForm()
     return redirect('create-category')
 
+def save_book(request):
+    resp = { 'status' : 'failed', 'msg':''}
+
+    if request.method == 'POST':
+        form = BooksForm(request.POST)
+        if form.is_valid():
+            book = form.save()  # Save the form data
+            # Redirect to the edit category page with the category ID
+            return redirect('edit-book', book_id=book.id)
+
+
+        else:
+            messages.error(request,"jsdjsajsdd")
+            # Form is not valid, render the template with the form and errors
+            # return render(request, 'create_category.html', {'form': form})
+    else:
+        form = BookForm()
+    return redirect('create-book')
+
 
 # @login_required
 # def save_category(request):
@@ -351,6 +336,27 @@ def edit_category(request, category_id):
 
 
 
+@login_required
+def edit_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    categories= Category.objects.all()
+    if request.method == 'POST':
+        form = BooksForm(request.POST, instance=book)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Book updated successfully.')
+            return redirect('edit-book', book_id=book_id)
+    else:
+        form = BooksForm(instance=book)
+    
+    context = {
+        'form': form,
+        'book': book,
+        'categories': categories
+    }
+    return render(request, 'edit_book.html', context)
+
+
 
 
 
@@ -377,8 +383,6 @@ def create_category(request, pk = None):
     context = context_data(request)
     context['page'] = 'manage_category'
     context['page_title'] = 'Manage Category'
-   
-       
     
     return render(request, 'create_category.html', context)
 
@@ -405,34 +409,6 @@ def books(request):
     context['books'] = models.Book.objects.all()
     return render(request, 'books.html', context)
 
-@login_required
-def save_book(request):
-    resp = { 'status': 'failed', 'msg' : '' }
-    if request.method == 'POST':
-        post = request.POST
-        if not post['id'] == '':
-            book = models.Book.objects.get(id = post['id'])
-            form = forms.BooksForm(request.POST, instance=book)
-        else:
-            form = forms.BooksForm(request.POST) 
-
-        if form.is_valid():
-            form.save()
-            if post['id'] == '':
-                messages.success(request, "Book has been saved successfully.")
-            else:
-                messages.success(request, "Book has been updated successfully.")
-            resp['status'] = 'success'
-        else:
-            for field in form:
-                for error in field.errors:
-                    if not resp['msg'] == '':
-                        resp['msg'] += str('<br/>')
-                    resp['msg'] += str(f'[{field.name}] {error}')
-    else:
-         resp['msg'] = "There's no data sent on the request"
-
-    return redirect('/books')
 
 @login_required
 def view_book(request, pk = None):

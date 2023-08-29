@@ -26,7 +26,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 urlpatterns = [
     path('admin', admin.site.urls),
-    path('view/', views.view),
     path('update_category/<int:id>', views.update_category),
     path('books/update_books/<int:id>', views.update_book),
     path('',views.home, name="home-page"),
@@ -42,19 +41,17 @@ urlpatterns = [
     path('manage_user/<int:pk>',views.manage_user,name='manage-user-pk'),
     path('save_user',views.save_user,name='save-user'),
     path('delete_user/<int:pk>',views.delete_user,name='delete-user'),
-    path('category',views.category,name='category-page'),
 
+    path('category',views.category,name='category-page'),
     path('create_category',views.create_category,name='create-category'), 
     path('edit_category/<int:category_id>/', views.edit_category, name='edit-category'),
-
-    # path('manage_category',views.manage_category,name='manage-category'),
-    # path('manage_category/<int:pk>',views.manage_category,name='manage-category-pk'),
     path('view_category/<int:pk>',views.view_category,name='view-category-pk'),
     path('save_category',views.save_category,name='save-category'),
     path('delete_category/<int:pk>',views.delete_category,name='delete-category'), 
+
     path('books/',views.books,name='book-page'),
-    path('manage_book',views.manage_book,name='manage-book'),
-    path('manage_book/<int:pk>',views.manage_book,name='manage-book-pk'),
+    path('create_book',views.create_book,name='create-book'), 
+    path('edit_book/<int:book_id>/', views.edit_book, name='edit-book'),
     path('view_book/<int:pk>',views.view_book,name='view-book-pk'),
     path('save_book',views.save_book,name='save-book'),
     path('delete_book/<int:pk>',views.delete_book,name='delete-book'),

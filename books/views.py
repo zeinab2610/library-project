@@ -243,6 +243,7 @@ def save_category(request):
         if form.is_valid():
             category = form.save()  # Save the form data
             # Redirect to the edit category page with the category ID
+            messages.success(request,"Category is created successfully")
             return redirect('edit-category', category_id=category.id)
 
 
@@ -400,24 +401,6 @@ def view_book(request, pk = None):
         context['book'] = models.Book.objects.get(id=pk)
     
     return render(request, 'view_book.html', context)
-
-@login_required
-def manage_book(request, pk = None):
-    categories = Category.objects.all()
-    context = context_data(request)
-    context['page'] = 'manage_book'
-    context['page_title'] = 'Manage Book'
-    context['categories'] = categories
-    action = request.GET.get('action')
-    if action == 'create':
-        context['create'] = 'true'
-    else:
-        context['create'] = 'false'
-    if pk is None:
-        context['book'] = {}
-    else:
-        context['book'] = models.Book.objects.get(id=pk)
-    return render(request, 'manage_book.html', context)
 
 @login_required
 def delete_book(request, pk = None):

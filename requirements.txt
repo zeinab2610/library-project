@@ -1,0 +1,69 @@
+# Project Requirements
+# --------------------
+
+# This file lists the project's Python dependencies and provides setup instructions.
+
+# Python:
+# Version: 3.6 or higher
+# Download and install Python: https://www.python.org/downloads/
+
+# pip:
+# Version: The latest version is recommended
+# pip is the package installer for Python. It comes pre-installed with Python 3.4+
+# You can upgrade pip using the following command:
+# python -m pip install --upgrade pip
+
+# Virtual Environment (Optional but recommended):
+# It's recommended to use a virtual environment to isolate project dependencies.
+# This helps prevent conflicts between different projects' dependencies.
+# You can create a virtual environment using the following command:
+# python -m venv venv
+
+# Activate the virtual environment:
+# On Windows: venv\Scripts\activate
+# On macOS and Linux: source venv/bin/activate
+
+#you might have to install some libraries such as numpy..
+
+## To run the project, follow these steps:
+
+# 1. Download the project source code from the provided URL.
+
+# 2. Set up the virtual environment (recommended):
+# python -m venv venv
+# On Windows: venv\Scripts\activate
+# On macOS and Linux: source venv/bin/activate
+
+# 3. Install project dependencies from the requirements.txt file:
+# pip install -r requirements.txt
+
+# 4. Create a new database for the project in your preferred database management system (e.g., PostgreSQL, MySQL).
+
+# 5. Update the database settings in your project's settings.py file to match your database configuration.
+
+# Example settings for PostgreSQL:
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'your_database_name',
+#         'USER': 'your_database_user',
+#         'PASSWORD': 'your_database_password',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+
+# 6. Apply initial database migrations to set up the database schema:
+# python manage.py migrate
+
+# 7. Create a superuser to access the project's admin interface:
+# python manage.py createsuperuser
+
+# 8. Launch the development server:
+# python manage.py runserver
+
+# 9. Open your web browser and navigate to http://127.0.0.1:8000/ to access the project.
+
+# Conclusion:
+# With Python and pip installed, the virtual environment activated, the database set up and settings updated, and migrations applied, you're ready to run the project.
+# Remember to regularly update your dependencies and keep your environment clean and organized.

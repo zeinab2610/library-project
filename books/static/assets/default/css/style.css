@@ -218,3 +218,7 @@ body.loading {
 #uni_modal .modal-sub-footer {
     display: none;
 }
+
+#topNav {
+    margin-left: 12rem;
+}

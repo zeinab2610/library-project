@@ -10,12 +10,9 @@ urlpatterns = [
     path('admin', admin.site.urls),
     path('', views.home, name="home-page"),
     path('login/', views.login_page, name='login-page'),
-    path('register', views.userregister, name='register-page'),
-    path('save_register', views.save_register, name='register-user'),
     path('user_login', views.login_user, name='login-user'),
     path('home', views.home, name='home-page'),
     path('logout', views.logout_user, name='logout'),
-    path('update_password', views.update_password, name='update-password'),
 
     path('category', views.category, name='category-page'),
     path('create_category', views.create_category, name='create-category'),

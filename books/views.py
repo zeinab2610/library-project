@@ -214,7 +214,7 @@ def save_book(request):
         form = BooksForm(request.POST)
         if form.is_valid():
             book = form.save()  # Save the form data
-            # Redirect to the edit category page with the category ID
+            messages.success(request, "Book is created successfully")
             return redirect('edit-book', book_id=book.id)
 
         else:

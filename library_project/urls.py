@@ -48,7 +48,7 @@ urlpatterns = [
     path('save_category',views.save_category,name='save-category'),
     path('delete_category/<int:pk>',views.delete_category,name='delete-category'), 
 
-    path('books/',views.books,name='book-page'),
+    path('books',views.books,name='book-page'),
     path('create_book',views.create_book,name='create-book'), 
     path('edit_book/<int:book_id>/', views.edit_book, name='edit-book'),
     path('view_book/<int:pk>',views.view_book,name='view-book-pk'),
